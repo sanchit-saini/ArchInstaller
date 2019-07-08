@@ -70,15 +70,15 @@ arch-chroot $MOUNT_POINT /bin/bash -c "sed -i 's|#\(%wheel ALL=(ALL) ALL\)|\1|g'
 arch-chroot $MOUNT_POINT /bin/bash -c "echo $HOSTNAME > /etc/hostname"
 
 # TODO test add resume in initframs & generate new kernel image
-if [ $(cat /etc/mkinitcpio.conf | grep resume | wc -l) == 0 ] ; then
+if [ $(cat $MOUNT_POINT/etc/mkinitcpio.conf | grep resume | wc -l) == 0 ] ; then
 	arch-chroot $MOUNT_POINT /bin/bash -c "sed -i -e $(grep -n 'resume' /etc/mkinitcpio.conf | cut -d: -f 1)s'|.$| resume\"|' /etc/mkinitcpio.conf"
 fi
-mkinitcpio -c /etc/mkinitcpio-custom.conf -g /boot/linux-custom.img
+arch-chroot $MOUNT_POINT /bin/bash -c "mkinitcpio -p linux"
 
 # fetch post script and config files in user home directory
-cd /home/$USERNAME \
+arch-chroot $MOUNT_POINT /bin/bash -c "cd /home/$USERNAME \
 	&& git clone https://github.com/sanchit-saini/ArchInstaller.git \
-	&& git clone https://github.com/sanchit-saini/dotfiles.git
+	&& git clone https://github.com/sanchit-saini/dotfiles.git"
 
 umount -a
 reboot
