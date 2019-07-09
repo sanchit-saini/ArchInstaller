@@ -16,12 +16,12 @@ echo yay -S --noconfirm $AUR_PACKAGES
 
 echo $GIT_REPOS | sed "s|https|\nhttps|g" | xargs -n 1 git clone
 
-cp ../dotfiles/config.h st/
-cp ../dotfiles/st-copyout st/
-cd st && make
+cp ~/dotfiles/st/config.h st/
+cp ~/dotfiles/st/st-copyout st/
+cd st
 sudo make install
 
-rm -rf ../dotfiles/.git
-cp -r ../dotfiles/ ~/
+rm -rf ~/dotfiles/.git
+cp -r ~/dotfiles/. ~/
 
 rm -rf ~/dotfiles ~/ArchInstaller

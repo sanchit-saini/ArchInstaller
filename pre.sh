@@ -64,14 +64,14 @@ arch-chroot $MOUNT_POINT /bin/bash -c "useradd -m -g users -G wheel,storage,powe
 arch-chroot $MOUNT_POINT /bin/bash -c "echo -e '$USER_PWD\n$USER_PWD' | passwd $USERNAME"
 
 # Enable Sudo access
-arch-chroot $MOUNT_POINT /bin/bash -c "sed -i 's|#\(%wheel ALL=(ALL) ALL\)|\1|g' /etc/sudoers"
+arch-chroot $MOUNT_POINT /bin/bash -c "sed -i 's|# %wheel ALL=(ALL) ALL|%wheel ALL=(ALL) ALL|g' /etc/sudoers"
 
 # Set Hostname
 arch-chroot $MOUNT_POINT /bin/bash -c "echo $HOSTNAME > /etc/hostname"
 
-# TODO test add resume in initframs & generate new kernel image
+# add resume in initframs & generate new kernel image
 if [ $(cat $MOUNT_POINT/etc/mkinitcpio.conf | grep resume | wc -l) == 0 ] ; then
-	arch-chroot $MOUNT_POINT /bin/bash -c "sed -i -e $(grep -n 'resume' /etc/mkinitcpio.conf | cut -d: -f 1)s'|.$| resume\"|' /etc/mkinitcpio.conf"
+	arch-chroot $MOUNT_POINT /bin/bash -c "sed -i 's|keyboard|keyboard resume|g' /etc/mkinitcpio.conf"
 fi
 arch-chroot $MOUNT_POINT /bin/bash -c "mkinitcpio -p linux"
 
@@ -80,5 +80,7 @@ arch-chroot $MOUNT_POINT /bin/bash -c "cd /home/$USERNAME \
 	&& git clone https://github.com/sanchit-saini/ArchInstaller.git \
 	&& git clone https://github.com/sanchit-saini/dotfiles.git"
 
+arch-chroot $MOUNT_POINT /bin/bash -c "cd /home/$USERNAME \
+	&& chown -hR $USERNAME:users ."
 umount -a
 reboot
