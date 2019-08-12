@@ -1,0 +1,17 @@
+MOUNT_POINT="/mnt"
+BIOS_TYPE="BIOS" # BIOS | UEFI
+DEVICE="/dev/sda" # /dev/nvme0n1 | /dev/sda
+DEVICE_TYPE="SATA" # NVME | SATA
+BOOT_PARTITION_SIZE="300MiB" # Only MiB should be used
+ROOT_PARTITION_SIZE="80.7GiB"
+SWAP_PARTITION_SIZE="8GiB"
+HOME_PARTITION_SIZE="388GiB"
+HOSTNAME="localhost"
+ROOT_PASSWD="topsecret"
+USERNAME="username"
+USER_PASSWD="secret"
+LANG="en_US.UTF-8"
+LOCALE="en_US.UTF-8 UTF-8"
+TIMEZONE="/usr/share/zoneinfo/Asia/Kolkata"
+AUR_HELPER="yay"
+DOTFIlES="https://github.com/sanchit-saini/dotfiles.git"
