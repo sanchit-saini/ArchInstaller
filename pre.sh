@@ -318,7 +318,7 @@ function set_user_passwd() {
 # Uncomment wheel group in sudoers file
 #######################################
 function enable_sudo_privilege () {
-  arch_chroot_exec "sed -i 's|# %wheel ALL=(ALL) ALL|%wheel ALL=(ALL) ALL|g' /etc/sudoers"
+  arch_chroot_exec "sed -i 's|# %wheel ALL=(ALL:ALL) ALL|%wheel ALL=(ALL:ALL) ALL|g' /etc/sudoers"
 }
 
 
