@@ -4,7 +4,7 @@
 **⚠ Warning  : This script wipes whole device.**
 
 
-ArchInstaller is a set of bash script that autoinstalls and autoconfigures fully functional DE/WM, By default ArchInstaller script install i3wm and uses my [dotfiles](https://github.com/sanchit-saini/dotfiles).
+ArchInstaller is a set of bash script that autoinstalls and autoconfigures fully functional DE/WM, By default ArchInstaller script install dwm and uses my [dotfiles](https://github.com/sanchit-saini/dotfiles).
 
 ## Installation
 1. Get the script :```wget cutt.ly/arch -O - | tar xz``` or ```wget https://github.com/sanchit-saini/ArchInstaller/tarball/master -O - | tar xz```
