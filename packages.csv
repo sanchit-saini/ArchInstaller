@@ -1,88 +1,104 @@
-PACKAGE/URL,TAG,PURPOSE
-i3-gaps-next-git,A,"Window manager"
-i3blocks,P,"Status bar"
-betterlockscreen,A,"Screen lock"
-xorg-xinit,P,"Starts the graphical server"
-xorg-server,P,"Graphical server"
-xorg-xwininfo,P,"Allows querying information about windows"
-xorg-font-utils,P,"X.Org font utilities"
-xorg-xprop,P,"Tool for detecting window properties"
-xorg-xbacklight,P,"Enables changing screen brightness levels"
-xorg-xdpyinfo,P,"Utility for displaying information about an X server"
-xorg-xrandr,P,"Utility to the rotate or resize X Window System extension"
-arandr,P,"UI for screen adjustment"
-otf-font-awesome,P,"Fonts"
-ttf-inconsolata,P,"Fonts"
-ttf-linux-libertine,P,"Fonts"
-ttf-joypixels,A,"Fonts"
-ttf-symbola,A,"Fonts"
-tmux,P,"Terminal multiplexer"
-rofi,P,"Window switcher, run dialog, ssh-launcher and dmenu replacement"
-ranger,P,"Terminal file manager"
-libnotify,P,"Library is used to send desktop notifications"
-dunst,P,"Notification daemon"
-bc,P, "Calculator"
-calcurse,P,"Terminal-based calendar"
-compton,P,"Composite window-effects manager"
-dosfstools,P,"Support for dos-like filesystems"
-exfat-utils,P,"Support for FAT drives"
-ntfs-3g,P,"Support for NTFS partitions"
-sxiv,P,"Image viewer"
-xwallpaper,P,"Wallpaper setting utility for X"
-ffmpeg,P,"Complete solution to record, convert and stream audio and video"
-gnome-keyring,P,"GNOME Components that store passwords,keys,certificates and make them available to applications"
-arc-gtk-theme,P,"Dark GTK theme"
-mpv,P,"Video player"
-networkmanager,P,"Network Manager"
-gotop,A,"provides system usage information and displays processes"
-htop,P,"provides system usage information and displays processes"
-firefox-developer-edition,P,"Web browser"
-pulseaudio,P,"Audio system"
-pulseaudio-alsa,P,"Audio interface with ALSA"
-pulsemixer,P,"Ncurses audio controller"
-pavucontrol,P,"PulseAudio GUI Volume Control"
-imagemagick,P,"Image viewing/manipulation program"
-maim,P,"Utility to take a screenshot"
-socat,P,"Socket utility"
-unrar,P,"Extracts rar's"
-unzip,P,"Unzips zips"
-file-roller,P,"Create and modify archives"
-urlscan,A,"Parses URLs in the terminal allowing keyboard-based selection"
-xurls,A,"Allows a user to select urls in the terminal via the keyboard"
-w3m,P,"Terminal browser which can also view images"
-xclip,P,"Allows for copying and pasting from the command line"
-youtube-dl,P,"YouTube Downloader"
-zathura,P,"Pdf viewer"
-zathura-pdf-mupdf,P,"Allows mupdf pdf compatibility in zathura"
-poppler,P,"Manipulates .pdfs and gives .pdf previews and other .pdf functions"
-mediainfo,P,"Supplies technical and tag information about a video or audio file "
-atool,P,"Manages and gives information about archives"
-fzf,P,"Fuzzy finder tool"
-highlight,P,"Highlight code output"
-light,A,"Program to easily change brightness on backlight-controllers"
-sublime-text-dev,A,"GUI code editor"
-wget,P,"Network utility to retrieve files from the Web"
-tree,P,"A directory listing program displaying a depth indented list of files"
-networkmanager-dmenu-git,A,"Control NetworkManager via dmenu"
-numix-icon-theme-git,A,"Icon Theme"
-python-pip,A,"Python package manager"
-linux-headers,A,"Header files and scripts for building modules for Linux kernel"
-virtualbox-host-modules-arch,P,"Virtualbox host kernel modules for Arch Kernel"
-virtualbox,A,"VM"
-docker,A,"Container"
-ctags,A,"Generates an index file of language objects found in source files"
-ghostscript,A,"PDF scipting language"
-sysstat,P,"Provides CPU stats"
-ntp,P,"Network Time Protocol daemon"
-patch,P,"utility to apply patch files to original sources"
-gdb,P,"GNU's Not Unix Debugger"
-thunar,P,"Modern file manager"
-thunar-archive-plugin,P,"create and deflate archives"
-thunar-media-tags-plugin,P,"view/edit id3/ogg tags"
-thunar-volman,P,"manages removable devices"
-tumbler,P,"for thumbnail preview"
-gvfs,P,"Auto mount devices"
-prezto-git,A,"configuration framework for Zsh"
-cpupower,P,"CPU frequency scaling"
-https://github.com/lukesmithxyz/st.git,G,"Suckless terminal emulator"
-tlp,P,"Linux Advanced Power Management"
+PACKAGE/URL,TAG
+xorg-xinit, P
+xorg-server, P
+xorg-xwininfo, P
+xorg-font-util, P
+xorg-xprop, P
+xorg-xdpyinfo, P
+xorg-xrandr, P
+xorg-xinput, P
+acpi, P
+arandr, P
+otf-font-awesome, P
+ttf-inconsolata, P
+ttf-linux-libertine, P
+ttf-joypixels, P
+tmux, P
+rofi, P
+ranger, P
+libnotify, P
+dunst, P
+bc, P
+picom, P
+dosfstools, P
+exfat-utils, P
+ntfs-3g, P
+sxiv, P
+xwallpaper, P
+ffmpeg, P
+arc-gtk-theme, P
+mpv, P
+htop, P
+firefox-developer-edition, P
+chromium, P
+pulseaudio, P
+pulseaudio-alsa, P
+pulsemixer, P
+pavucontrol, P
+imagemagick, P
+maim, P
+socat, P
+unrar, P
+unzip, P
+file-roller, P
+ueberzug, P
+xclip, P
+youtube-dl, P
+zathura, P
+zathura-pdf-mupdf, P
+poppler, P
+mediainfo, P
+atool, P
+fzf, P
+highlight, P
+light, A
+vscodium-bin, A
+wget, P
+tree, P
+python-pip, P
+virtualbox-host-dkms, P
+virtualbox, P
+linux-lts-headers, P
+docker, P
+ctags, P
+ghostscript, P
+sysstat, P
+ntp, P
+patch, P
+gdb, P
+thunar, P
+thunar-archive-plugin, P
+thunar-media-tags-plugin, P
+thunar-volman, P
+tumbler, P
+gvfs, P
+cpupower, P
+tk, P
+gcc-fortran, P
+simplescreenrecorder, P
+unclutter, P
+r, P
+usbctl, P
+neofetch, P
+dmenu, P
+ncdu, P
+xdiskusage, P
+keepassxc, P
+gvfs-mtp, P
+npm, P
+yarn, P
+nodejs, P
+gimp, P
+jq, P
+texlive-core, P
+texlive-latexextra, P
+endpoint-verification, A
+xorg-xsetroot,  P
+linux-lts,  P
+rclone,  P
+ripgrep,  P
+android-tools,  P
+xdotool, P
+ttf-symbola, A
+ffmpeg, P
+qbittorrent, P

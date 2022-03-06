@@ -16,7 +16,6 @@ post.sh :
 ```
 The script is written in a functional way for easier readability, everything should be self-explanatory.
 If in a case you are still facing any problem you know what to do create an issue!
-[![](media/issues.png)]()
 
 ## How ArchInstaller Source is Structured?
 ### Pre Script

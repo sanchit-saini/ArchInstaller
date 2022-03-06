@@ -6,9 +6,6 @@ set -e
 
 source config
 
-BIOD_BOOTLOADER_PACKAGES="grub"
-UEFI_BOOTLOADER_PACKAGES="grub efibootmgr dosfstools os-prober mtools"
-BASE_INSTALL_PACKAGES="base base-devel dialog vim git networkmanager"
 BOOT_PARTITION=""
 ROOT_PARTITION=""
 SWAP_PARTITION=""
@@ -25,10 +22,6 @@ HOME_PARTITION=""
 #   ROOT_PARTITION
 #   SWAP_PARTITION
 #   HOME_PARTITION
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function set_partitions() {
 if [[ $BIOS_TYPE == "UEFI" ]] ; then
@@ -78,10 +71,6 @@ fi
 #   ROOT_PARTITION_SIZE
 #   SWAP_PARTITION_SIZE
 #   HOME_PARTITION_SIZE
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function make_partitions() {
   sgdisk --zap-all $DEVICE
@@ -89,29 +78,25 @@ function make_partitions() {
 
   # TODO : Need more robust way to set start and end point and a way to handle conversion between MiB,GiB
   if [[ $BIOS_TYPE == "UEFI" ]] ; then
-		local BOOT_START
-    local BOOT_END
-    local ROOT_START
-    local ROOT_END
-    local SWAP_START
-    local SWAP_END
-    local HOME_START
-    local HOME_END
-
-    # Initialize start and end point of different partitions
+     # Initialize start and end point of different partitions
     BOOT_START=1MiB
     BOOT_END=$BOOT_PARTITION_SIZE
-   
+
     ROOT_START=$BOOT_END
     # converting MiB to GiB for BOOT_END, striping GiB to do addition operation and appending GiB at end
     ROOT_END=$(echo 0."${BOOT_END::-3}" + ${ROOT_PARTITION_SIZE::-3}|bc)${ROOT_PARTITION_SIZE:(-3)}
-
+    
     SWAP_START=$ROOT_END
     # striping GiB to do addition operation and appending GiB at end
     SWAP_END=$(echo "${ROOT_END::-3}" + ${SWAP_PARTITION_SIZE::-3}|bc)${SWAP_PARTITION_SIZE:(-3)}
-
+    
     HOME_START=$SWAP_END
     HOME_END=$(echo "${SWAP_END::-3}" + ${HOME_PARTITION_SIZE::-3} - 0.01|bc)${HOME_PARTITION_SIZE:(-3)}
+
+    echo "$BOOT_START $BOOT_END"
+    echo "$ROOT_START $ROOT_END"
+    echo "$SWAP_START $SWAP_END" 
+    echo "$HOME_START $HOME_END"
 
     parted -s "$DEVICE" mklabel gpt \
     mkpart primary fat32 "$BOOT_START" "$BOOT_END" set 1 boot on \
@@ -158,10 +143,6 @@ function make_partitions() {
 #   ROOT_PARTITION
 #   SWAP_PARTITION
 #   HOME_PARTITION
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function mount_partitions() {	
   mount $ROOT_PARTITION $MOUNT_POINT
@@ -179,10 +160,6 @@ function mount_partitions() {
 # To enable the device for paging
 # Globals:
 #   SWAP_PARTITION
-# Arguments:
-#   Command
-# Returns:
-#   None
 #######################################
 function swap_on() {
   swapon $SWAP_PARTITION
@@ -193,10 +170,6 @@ function swap_on() {
 # Execute command in new sys env
 # Globals:
 #   MOUNT_POINT
-# Arguments:
-#   Command
-# Returns:
-#   None
 #######################################
 function arch_chroot_exec() {
   arch-chroot $MOUNT_POINT /bin/bash -c "$1"
@@ -208,10 +181,6 @@ function arch_chroot_exec() {
 # Globals:
 #   MOUNT_POINT
 #   BASE_INSTALL_PACKAGES
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function base_install() {
   pacstrap $MOUNT_POINT $BASE_INSTALL_PACKAGES
@@ -222,10 +191,6 @@ function base_install() {
 # Generate fstab file
 # Globals:
 #   MOUNT_POINT
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function configure_genfstab() {
   sh -c "genfstab -U $MOUNT_POINT > $MOUNT_POINT/etc/fstab"
@@ -236,13 +201,9 @@ function configure_genfstab() {
 # Link timezone file and sync hwclock
 # Globals:
 #   TIMEZONE
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function configure_timezone() {
-  arch_chroot_exec "rm /etc/localtime"
+  #arch_chroot_exec "rm /etc/localtime"
   arch_chroot_exec "ln -sf $TIMEZONE /etc/localtime"
   arch_chroot_exec "hwclock --systohc"
 }
@@ -253,10 +214,6 @@ function configure_timezone() {
 # Globals:
 #   LANG
 #   LOCALE
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function configure_locale() {
   arch_chroot_exec "sed -i \" s|#\($LOCALE\)|\1|g \" /etc/locale.gen"
@@ -271,15 +228,11 @@ function configure_locale() {
 #   DEVICE
 #   BIOS_TYPE
 #   UEFI_BOOTLOADER_PACKAGES
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function install_grub_bootloader() {
   if [[ $BIOS_TYPE == "UEFI" ]] ; then	
     arch_chroot_exec "pacman -S $UEFI_BOOTLOADER_PACKAGES --needed --noconfirm"
-    arch_chroot_exec "grub-install --target=x86_64-efi --recheck --bootloader-id=grub_uefi"
+    arch_chroot_exec "grub-install --target=x86_64-efi --recheck --bootloader-id=GRUB --efi-directory=/boot/EFI"
   fi
   if [[ $BIOS_TYPE == "BIOS" ]] ; then
     arch_chroot_exec "pacman -S $BIOD_BOOTLOADER_PACKAGES --needed --noconfirm"
@@ -294,20 +247,16 @@ function install_grub_bootloader() {
 # in initramfs
 # Globals:
 #   SWAP_PARTITION
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function enable_swap_hibernation() {
   local GRUB_CONFIG_PATH
   GRUB_CONFIG_PATH=/etc/default/grub
   # Checking grub.cfg file doesn't contain resume kernel parameter
-  if [[ $(grep -ic 'resume' $GRUB_CONFIG_PATH) == 0 ]] ; then
+  if [[ $(grep -ic 'resume' /mnt/$GRUB_CONFIG_PATH) == 0 ]] ; then
 
     # Locating line number which contains GRUB_CMDLINE_LINUX_DEFAULT
     local LINE_NUMBER
-    LINE_NUMBER=$(grep -n 'GRUB_CMDLINE_LINUX_DEFAULT' $GRUB_CONFIG_PATH | head -c 1)
+    LINE_NUMBER=$(grep -n 'GRUB_CMDLINE_LINUX_DEFAULT' /mnt/$GRUB_CONFIG_PATH | head -c 1)
 
     # Adding resume parameter at the end of located line in grub.cfg file
     arch_chroot_exec "sed -i -e ""$LINE_NUMBER""s'|.$| resume=$SWAP_PARTITION\"|' $GRUB_CONFIG_PATH"
@@ -315,7 +264,7 @@ function enable_swap_hibernation() {
 
   local MKINIT_CONFIG_PATH=/etc/mkinitcpio.conf
   # Checking mkinitcpio.conf file doesn't contain resume kernel parameter
-  if [[ $(grep -ic 'resume' $MKINIT_CONFIG_PATH) == 0 ]] ; then
+  if [[ $(grep -ic 'resume' /mnt/$MKINIT_CONFIG_PATH) == 0 ]] ; then
 
     # Adding resume hook in mkinitcpio.conf file
     arch_chroot_exec "sed -i 's|keyboard|keyboard resume|g' $MKINIT_CONFIG_PATH"
@@ -328,12 +277,6 @@ function enable_swap_hibernation() {
 
 #######################################
 # Generate grub config file
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function configure_grub() {
   arch_chroot_exec "grub-mkconfig -o /boot/grub/grub.cfg"
@@ -344,10 +287,6 @@ function configure_grub() {
 # Set root password
 # Globals:
 #   ROOT_PASSWD
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function set_root_passwd() {
   arch_chroot_exec "echo -e '$ROOT_PASSWD\n$ROOT_PASSWD' | passwd"
@@ -358,13 +297,9 @@ function set_root_passwd() {
 # Create user
 # Globals:
 #   USERNAME
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function create_user() {
-  arch_chroot_exec "useradd -m -g users -G wheel,storage,power -s /bin/bash $USERNAME"
+  arch_chroot_exec "useradd -m -g users -G wheel,storage,power,video -s /bin/bash $USERNAME"
 }
 
 
@@ -373,10 +308,6 @@ function create_user() {
 # Globals:
 #   USERNAME
 #   USER_PASSWD
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function set_user_passwd() {
   arch_chroot_exec "echo -e '$USER_PASSWD\n$USER_PASSWD' | passwd $USERNAME"
@@ -385,12 +316,6 @@ function set_user_passwd() {
 
 #######################################
 # Uncomment wheel group in sudoers file
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function enable_sudo_privilege () {
   arch_chroot_exec "sed -i 's|# %wheel ALL=(ALL) ALL|%wheel ALL=(ALL) ALL|g' /etc/sudoers"
@@ -401,10 +326,6 @@ function enable_sudo_privilege () {
 # Set hostname
 # Globals:
 #   HOSTNAME
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function set_hostname() {
   arch_chroot_exec "echo $HOSTNAME > /etc/hostname"
@@ -418,10 +339,6 @@ function set_hostname() {
 #   USERNAME
 #   DOTFIlES
 #   MOUNT_POINT
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function copy_script() {
   cp -r "$(pwd)" $MOUNT_POINT/home/$USERNAME
@@ -432,25 +349,27 @@ function copy_script() {
 
 #######################################
 # Enable network serive
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function enable_network_manager() {
   arch_chroot_exec "systemctl enable NetworkManager"
 }
 
+
+#######################################
+# Laptop specific tweaks
+#######################################
+function laptop_specific() {
+  # to fix wifi drivers
+  if [[ $LAPTOP_SPECIFIC == "true" ]] ; then
+    local GRUB_CONFIG_PATH=/etc/default/grub
+    local LINE_NUMBER=$(grep -n 'GRUB_CMDLINE_LINUX_DEFAULT' /mnt/$GRUB_CONFIG_PATH | head -c 1)
+    arch_chroot_exec "sed -i -e ""$LINE_NUMBER""s'|.$| pcie_aspm.policy=powersave\" |' $GRUB_CONFIG_PATH"
+  fi
+}
+
+
 #######################################
 # Entry point function
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function main() {
   make_partitions
@@ -470,7 +389,8 @@ function main() {
   set_hostname
   copy_script
   enable_network_manager
-  reboot
+  laptop_specific
+  #reboot
 }
 
 main

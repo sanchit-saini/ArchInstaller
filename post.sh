@@ -30,10 +30,6 @@ GIT_REPOS=$(awk -F ',' 'FNR > 1 {print $1,$2}' packages.csv \
 # Build and Install AUR Helper from src
 # Globals:
 #   AUR_HELPER
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function aur_install() {
   git clone --depth 1 https://aur.archlinux.org/"$AUR_HELPER".git
@@ -47,10 +43,6 @@ function aur_install() {
 # Globals:
 #   PACKAGES
 #   AUR_PACKAGES
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function install_packages() {
   sudo pacman -S --noconfirm $PACKAGES
@@ -59,65 +51,55 @@ function install_packages() {
 
 
 #######################################
-# build, install and configure from 
-# github repository
-# Globals:
-#   GIT_REPOS
-# Arguments:
-#   None
-# Returns:
-#   None
-#######################################
-function install_and_configure_git_repos() {
-  echo "$GIT_REPOS" | sed "s|https|\nhttps|g" | xargs -n 1 git clone
-  cp ~/dotfiles/st/config.h ~/dotfiles/st/st-copyout st/
-  cd st && sudo make -j4 install
-}
-
-
-#######################################
 # for configuring packages
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function configure() {
   rm -rf ~/dotfiles/.git
   cp -r ~/dotfiles/. ~/
+  mkdir ~/Screenshots ~/Desktop ~/Workspace
 }
 
 
 #######################################
+# update kernel to linux-lts
+#######################################
+function change_kernel() {
+  sudo pacman -S linux-lts linux-lts-headers
+  sudo pacman -Rddcuns linux linux-headers
+  sudo grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+
+#######################################
+# install dwm and dwmblocks
+#######################################
+function install_dwm_and_dwmblocks() {
+    git clone --depth 1 https://github.com/sanchit-saini/dwm.git
+    git clone --depth 1 https://github.com/sanchit-saini/dwmblocks.git
+    cd dwm
+    ./install.sh
+    cd ../dwmblocks/
+    ./install.sh
+}
+
+#######################################
 # remove unnecessary files
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function clean() {
-  rm -rf ~/dotfiles ~/ArchInstaller st/
+  rm -rf ~/dotfiles ~/ArchInstaller ~/dwm ~/dwmblocks
+  sudo pacman -Rddcuns vim
 }
 
 
 #######################################
 # Entry point function
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
 #######################################
 function main() {
   aur_install
   install_packages
-  install_and_configure_git_repos
   configure
+  install_dwm_and_dwmblocks
+  change_kernel
   clean
 }
 
