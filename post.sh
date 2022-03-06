@@ -71,14 +71,17 @@ function change_kernel() {
 
 
 #######################################
-# install dwm and dwmblocks
+# install dwm, dwmblocks, and st
 #######################################
-function install_dwm_and_dwmblocks() {
+function install_suckless_tools() {
     git clone --depth 1 https://github.com/sanchit-saini/dwm.git
     git clone --depth 1 https://github.com/sanchit-saini/dwmblocks.git
+    git clone --depth 1 https://github.com/sanchit-saini/st.git
     cd dwm
     ./install.sh
     cd ../dwmblocks/
+    ./install.sh
+    cd ../st/
     ./install.sh
 }
 
@@ -86,7 +89,7 @@ function install_dwm_and_dwmblocks() {
 # remove unnecessary files
 #######################################
 function clean() {
-  rm -rf ~/dotfiles ~/ArchInstaller ~/dwm ~/dwmblocks
+  rm -rf ~/dotfiles ~/sanchit-saini-ArchInstaller-*
 }
 
 
@@ -97,7 +100,7 @@ function main() {
   aur_install
   install_packages
   configure
-  install_dwm_and_dwmblocks
+  install_suckless_tools
   change_kernel
   clean
 }
