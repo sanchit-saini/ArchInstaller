@@ -65,7 +65,7 @@ function configure() {
 #######################################
 function change_kernel() {
   sudo pacman -S --noconfirm linux-lts linux-lts-headers
-  sudo pacman -Rddcuns --noconfirm linux linux-headers
+  sudo pacman -Rddcuns --noconfirm linux
   sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
