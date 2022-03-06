@@ -64,8 +64,8 @@ function configure() {
 # update kernel to linux-lts
 #######################################
 function change_kernel() {
-  sudo pacman -S linux-lts linux-lts-headers
-  sudo pacman -Rddcuns linux linux-headers
+  sudo pacman -S --noconfirm linux-lts linux-lts-headers
+  sudo pacman -Rddcuns --noconfirm linux linux-headers
   sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
@@ -87,7 +87,6 @@ function install_dwm_and_dwmblocks() {
 #######################################
 function clean() {
   rm -rf ~/dotfiles ~/ArchInstaller ~/dwm ~/dwmblocks
-  sudo pacman -Rddcuns vim
 }
 
 
