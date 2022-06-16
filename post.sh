@@ -74,13 +74,19 @@ function change_kernel() {
 # install dwm, dwmblocks, and st
 #######################################
 function install_suckless_tools() {
-    git clone --depth 1 https://github.com/sanchit-saini/dwm.git
-    git clone --depth 1 https://github.com/sanchit-saini/dwmblocks.git
-    git clone --depth 1 https://github.com/sanchit-saini/st.git
+    git clone --depth 1 $DWM
+    git clone --depth 1 $DWMBAR
+    git clone --depth 1 $ST
+
+    # install dwm
     cd dwm
-    ./install.sh
+    sudo make install
+
+    # install dwmblocks
     cd ../dwmblocks/
     ./install.sh
+
+    # install st
     cd ../st/
     ./install.sh
 }
