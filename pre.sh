@@ -364,6 +364,7 @@ function laptop_specific() {
     local GRUB_CONFIG_PATH=/etc/default/grub
     local LINE_NUMBER=$(grep -n 'GRUB_CMDLINE_LINUX_DEFAULT' /mnt/$GRUB_CONFIG_PATH | head -c 1)
     arch_chroot_exec "sed -i -e ""$LINE_NUMBER""s'|.$| pcie_aspm.policy=powersave\" |' $GRUB_CONFIG_PATH"
+    arch_chroot_exec "echo 'options rtw_pci disable_aspm=Y' > /etc/modprobe.d/rtw_pci.conf"
   fi
 }
 
